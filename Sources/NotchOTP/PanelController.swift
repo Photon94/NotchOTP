@@ -103,9 +103,13 @@ final class PanelController: NSObject, NSWindowDelegate {
         let right = screen.auxiliaryTopRightArea
         let neckWidth: CGFloat = safeTop > 0 ? max(160, (right?.minX ?? screen.frame.midX + 90) - (left?.maxX ?? screen.frame.midX - 90)) : 0
         let width: CGFloat = safeTop > 0 ? neckWidth : 260
-        let contentHeight: CGFloat = model.searching && !model.accounts.isEmpty
-            ? 32 + 8 + max(50, CGFloat(min(5, model.filtered.count)) * 65 - 3) + 8 + 12 + 24
-            : 86
+        let visibleRows = CGFloat(min(5, model.filtered.count))
+        let rowsHeight: CGFloat = visibleRows * 65 - 3
+        let searchChromeHeight: CGFloat = 84
+        var contentHeight: CGFloat = 86
+        if model.searching && !model.accounts.isEmpty {
+            contentHeight = max(50, rowsHeight) + searchChromeHeight
+        }
         let height = safeTop + contentHeight
         let top = safeTop > 0 ? screen.frame.maxY : screen.visibleFrame.maxY - 4
         let center = safeTop > 0 && left != nil && right != nil ? ((left!.maxX + right!.minX) / 2) : screen.frame.midX
