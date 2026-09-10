@@ -12,7 +12,7 @@
 
 Сборка без нотарификации Apple. Если macOS заблокирует первое открытие, используйте [инструкцию Apple для приложения, которому вы доверяете](https://support.apple.com/en-us/102445).
 
-1. Распакуйте `NotchOTP.zip` и перенесите `NotchOTP.app` в папку «Программы».
+1. Откройте DMG из релиза и перетащите `NotchOTP.app` на ярлык «Программы». Также доступен ZIP.
 2. Откройте приложение. В строке меню появится значок ключа.
 3. Нажмите «Добавить» и введите название аккаунта и секретный ключ Base32 из настроек двухфакторной аутентификации сервиса.
 4. Или нажмите «QR из файла», выберите изображение одного QR-кода и подтвердите название аккаунта.
@@ -83,3 +83,5 @@ open dist/NotchOTP.app --args --demo
 - [TOTP — RFC 6238, включая тестовые векторы](https://www.rfc-editor.org/rfc/rfc6238)
 - [Формат ссылок otpauth](https://github.com/google/google-authenticator/wiki/Key-Uri-Format)
 - [Apple Keychain Services](https://developer.apple.com/documentation/security/keychain-services)
+
+Для создания DMG после сборки: `./scripts/create-dmg.sh dist/NotchOTP.app dist/NotchOTP.dmg`.

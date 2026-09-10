@@ -1,0 +1,37 @@
+name: Add DMG to existing release
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/package-existing-release.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: macos-15
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RELEASE_TAG: v0.2.0
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Download and verify published app
+        run: |
+          set -euo pipefail
+          mkdir dist
+          gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --dir dist --pattern '*.zip' --pattern SHA256SUMS.txt
+          cd dist
+          shasum -a 256 --check --ignore-missing SHA256SUMS.txt
+          ditto -x -k "NotchOTP-${RELEASE_TAG}-macOS-arm64.zip" .
+      - name: Package existing binary as DMG
+        run: ./scripts/create-dmg.sh dist/NotchOTP.app "dist/NotchOTP-${RELEASE_TAG}-macOS-arm64.dmg"
+      - name: Publish DMG and its checksum
+        run: |
+          set -euo pipefail
+          cd dist
+          shasum -a 256 "NotchOTP-${RELEASE_TAG}-macOS-arm64.dmg" > SHA256SUMS-DMG.txt
+          gh release upload "$RELEASE_TAG" "NotchOTP-${RELEASE_TAG}-macOS-arm64.dmg" SHA256SUMS-DMG.txt --repo "$GITHUB_REPOSITORY" --clobber

@@ -28,7 +28,7 @@ The panel matches the physical notch width. Type to search, use Tab to switch ac
 
 [**Download NotchOTP 0.2.0 for Apple Silicon**](https://github.com/Photon94/NotchOTP/releases/tag/v0.2.0)
 
-Download the ZIP from the release, extract it, and move **NotchOTP.app** to Applications. The download is ad-hoc signed and not notarized; macOS may block its first launch. For a build you trust, follow [Apple’s per-app opening instructions](https://support.apple.com/en-us/102445).
+Download the DMG from the release, open it, and drag **NotchOTP.app** onto **Applications**. A ZIP is also available. The download is ad-hoc signed and not notarized; macOS may block its first launch. For a build you trust, follow [Apple’s per-app opening instructions](https://support.apple.com/en-us/102445).
 
 Or build a local copy with Xcode installed:
 
@@ -39,7 +39,7 @@ cd NotchOTP
 open dist/NotchOTP.app
 ```
 
-The script creates `dist/NotchOTP.app` and `dist/NotchOTP.zip`. Move the app to **Applications** for regular use. Builds from successful workflow runs are also available under [Actions](https://github.com/Photon94/NotchOTP/actions/workflows/ci.yml).
+The script creates `dist/NotchOTP.app` and `dist/NotchOTP.zip`. To also create an installer disk image, run `./scripts/create-dmg.sh dist/NotchOTP.app dist/NotchOTP.dmg`. Move the app to **Applications** for regular use. Builds from successful workflow runs are also available under [Actions](https://github.com/Photon94/NotchOTP/actions/workflows/ci.yml).
 
 1. Open **NotchOTP** and choose **Добавить** (Add).
 2. Enter the service, account name, and Base32 secret from the service's two-factor setup page. Alternatively, choose **QR из файла** to import an image containing one QR code.
