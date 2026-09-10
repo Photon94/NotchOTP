@@ -1,0 +1,19 @@
+# Swift / Xcode
+.build/
+.swiftpm/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+
+# Generated distribution files
+dist/
+*.app/
+*.dmg
+*.zip
+
+# Local system files
+.DS_Store
+.env
+.env.*
+*.p12
+*.mobileprovision

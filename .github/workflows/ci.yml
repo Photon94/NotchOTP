@@ -1,0 +1,37 @@
+name: macOS build and tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: macos-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - name: Show toolchain
+        run: swift --version
+      - name: Run tests
+        run: swift test
+      - name: Build local app
+        run: ./scripts/build.sh
+      - name: Verify signature
+        run: codesign --verify --deep --strict dist/NotchOTP.app
+      - uses: actions/upload-artifact@v7.0.1
+        with:
+          name: NotchOTP-macOS
+          path: dist/NotchOTP.zip
+          if-no-files-found: error
+          retention-days: 14
