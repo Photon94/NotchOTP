@@ -26,7 +26,11 @@ The panel matches the physical notch width. Type to search, use Tab to switch ac
 
 ## Get started
 
-Build a local copy with Xcode installed:
+[**Download NotchOTP 0.2.0 for Apple Silicon**](https://github.com/Photon94/NotchOTP/releases/tag/v0.2.0)
+
+Download the ZIP from the release, extract it, and move **NotchOTP.app** to Applications. The download is ad-hoc signed and not notarized; macOS may block its first launch. For a build you trust, follow [Apple’s per-app opening instructions](https://support.apple.com/en-us/102445).
+
+Or build a local copy with Xcode installed:
 
 ```sh
 git clone https://github.com/Photon94/NotchOTP.git
