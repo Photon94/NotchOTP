@@ -14,6 +14,12 @@ A small, native TOTP authenticator for macOS. Press **Control + Option + Space**
 
 The panel matches the physical notch width. Type to search, use Tab to switch accounts, and press Enter to copy. No browser, cloud service, or external packages are involved. The current app interface is in Russian.
 
+## Preview
+
+![NotchOTP animated demo: open the notch panel, switch accounts, and search](docs/assets/notchotp-demo.gif)
+
+Animated preview rendered from the app’s SwiftUI views using public demo accounts; interface enlarged for readability. [Still preview](docs/assets/notchotp-preview.png) · [Account search](docs/assets/notchotp-search.png).
+
 ## Features
 
 - **Notch-sized panel** with a downward reveal and reverse closing animation; respects Reduce Motion.
