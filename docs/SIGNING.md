@@ -26,3 +26,21 @@ Alternatively, use Xcode Organizer to upload a Developer ID archive for notariza
 A notarized application can still show macOS's normal confirmation that it was downloaded from the internet. Notarization addresses the unidentified-developer and unverified-app blocks.
 
 [Apple: Developer ID](https://developer.apple.com/developer-id/)
+
+## Publishing a release
+
+`scripts/notarize.sh` writes `dist-notarized/` with the notarized ZIP, the notarized DMG, `SHA256SUMS.txt`, and Apple's two submission logs. Those names match what the release workflow would produce, so the notarized files are the ones users download:
+
+```sh
+version=$(/usr/libexec/PlistBuddy -c 'Print CFBundleShortVersionString' scripts/Info.plist)
+gh release create "v$version" \
+  "dist-notarized/NotchOTP-v$version-macOS-arm64.zip" \
+  "dist-notarized/NotchOTP-v$version-macOS-arm64.dmg" \
+  "dist-notarized/SHA256SUMS.txt" \
+  --title "NotchOTP $version" \
+  --notes-file "docs/releases/$version.md" \
+  --latest
+```
+
+Pushing the tag still runs the release workflow, which builds and tests the tagged commit. It detects the existing release and leaves these downloads untouched, so it never replaces a notarized file with an ad-hoc one.
+

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.1 — 2026-09-11
+
+### Changed
+- Releases are signed with a Developer ID Application certificate and notarized by Apple; the app and the disk image carry stapled tickets, so Gatekeeper no longer blocks the first launch.
+- The release workflow leaves an already-published release untouched, so a locally notarized build is not replaced by an ad-hoc one.
+
+No changes to application behaviour.
+
 ## 0.2.0 — 2026-09-10
 
 ### Added

@@ -32,9 +32,9 @@ Animated preview rendered from the app’s SwiftUI views using public demo accou
 
 ## Get started
 
-[**Download NotchOTP 0.2.0 for Apple Silicon**](https://github.com/Photon94/NotchOTP/releases/tag/v0.2.0)
+[**Download NotchOTP 0.2.1 for Apple Silicon**](https://github.com/Photon94/NotchOTP/releases/tag/v0.2.1)
 
-Download the DMG from the release, open it, and drag **NotchOTP.app** onto **Applications**. A ZIP is also available. The download is ad-hoc signed and not notarized; macOS may block its first launch. For a build you trust, follow [Apple’s per-app opening instructions](https://support.apple.com/en-us/102445).
+Download the DMG from the release, open it, and drag **NotchOTP.app** onto **Applications**. A ZIP is also available. Both are signed with a Developer ID Application certificate and notarized by Apple, with the ticket stapled, so Gatekeeper accepts them offline. macOS still shows its usual confirmation for an app downloaded from the internet.
 
 Or build a local copy with Xcode installed:
 
@@ -54,7 +54,7 @@ The script creates `dist/NotchOTP.app` and `dist/NotchOTP.zip`. To also create a
 
 A setup secret is different from a six-digit login code. Keep your existing authenticator or recovery method until you have verified the new codes.
 
-> Version 0.2.0 is a local, ad-hoc-signed build. It is not notarized by Apple. The included build script targets the architecture of the Mac running it; the initial version was tested on Apple Silicon with macOS 26.5.
+> Release downloads are Developer ID signed and notarized. A local `./scripts/build.sh` build stays ad-hoc signed and targets the architecture of the Mac running it; see [docs/SIGNING.md](docs/SIGNING.md) for the distribution build. The initial version was tested on Apple Silicon with macOS 26.5.
 
 ## Keyboard controls
 
@@ -128,7 +128,7 @@ Tests/
 scripts/         App bundle assembly, icon, Info.plist
 ```
 
-A stable Developer ID signature and notarization are needed for wider distribution. Rebuilding an ad-hoc-signed app can cause macOS to ask again for access to an existing Keychain record.
+Distribution builds use a Developer ID signature and notarization; see [docs/SIGNING.md](docs/SIGNING.md). Rebuilding an ad-hoc-signed app can cause macOS to ask again for access to an existing Keychain record.
 
 ## References
 
