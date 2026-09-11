@@ -36,6 +36,14 @@ Animated preview rendered from the app’s SwiftUI views using public demo accou
 
 Download the DMG from the release, open it, and drag **NotchOTP.app** onto **Applications**. A ZIP is also available. Both are signed with a Developer ID Application certificate and notarized by Apple, with the ticket stapled, so Gatekeeper accepts them offline. macOS still shows its usual confirmation for an app downloaded from the internet.
 
+### Homebrew
+
+```sh
+brew install --cask photon94/tap/notchotp
+```
+
+The cask installs the same notarized download from this repository's releases, so Gatekeeper clears it without a prompt. Later versions arrive with `brew upgrade --cask notchotp`.
+
 Or build a local copy with Xcode installed:
 
 ```sh
@@ -135,3 +143,7 @@ Distribution builds use a Developer ID signature and notarization; see [docs/SIG
 - [RFC 6238 — TOTP](https://www.rfc-editor.org/rfc/rfc6238)
 - [Google Authenticator Key URI format](https://github.com/google/google-authenticator/wiki/Key-Uri-Format)
 - [Apple Keychain Services](https://developer.apple.com/documentation/security/keychain-services)
+
+## License
+
+[MIT](LICENSE) © 2026 Evgenii Shkurin

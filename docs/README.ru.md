@@ -18,6 +18,16 @@
 
 Файлы релиза подписаны сертификатом Developer ID Application и нотарифицированы Apple; тикет вложен в приложение и в DMG, поэтому Gatekeeper пропускает первый запуск без обходных действий. macOS по-прежнему показывает обычное подтверждение для программы, загруженной из интернета.
 
+### Homebrew
+
+```sh
+brew install --cask photon94/tap/notchotp
+```
+
+Cask ставит тот же нотарифицированный файл из релизов этого репозитория, поэтому Gatekeeper не задаёт вопросов. Обновления — `brew upgrade --cask notchotp`.
+
+### Вручную
+
 1. Откройте DMG из релиза и перетащите `NotchOTP.app` на ярлык «Программы». Также доступен ZIP.
 2. Откройте приложение. В строке меню появится значок ключа.
 3. Нажмите «Добавить» и введите название аккаунта и секретный ключ Base32 из настроек двухфакторной аутентификации сервиса.
@@ -91,3 +101,7 @@ open dist/NotchOTP.app --args --demo
 - [Apple Keychain Services](https://developer.apple.com/documentation/security/keychain-services)
 
 Для создания DMG после сборки: `./scripts/create-dmg.sh dist/NotchOTP.app dist/NotchOTP.dmg`.
+
+## Лицензия
+
+[MIT](../LICENSE) © 2026 Evgenii Shkurin
