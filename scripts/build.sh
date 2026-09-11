@@ -15,7 +15,11 @@ cp "$binary_path/NotchOTP" "$app_path/Contents/MacOS/NotchOTP"
 cp scripts/Info.plist "$app_path/Contents/Info.plist"
 printf 'APPL????' > "$app_path/Contents/PkgInfo"
 cp scripts/AppIcon.icns "$app_path/Contents/Resources/AppIcon.icns"
-codesign --force --sign - "$app_path"
+if [[ -n "${NOTCHOTP_SIGN_IDENTITY:-}" ]]; then
+    codesign --force --sign "$NOTCHOTP_SIGN_IDENTITY" --options runtime --timestamp "$app_path"
+else
+    codesign --force --sign - "$app_path"
+fi
 codesign --verify --deep --strict "$app_path"
 # Sign outside cloud folders: File Provider can attach FinderInfo during signing.
 ditto --norsrc "$app_path" "$output_path/NotchOTP.app"
