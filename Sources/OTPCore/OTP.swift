@@ -6,7 +6,7 @@ public enum OTP {
                             period: Int = 30, time: TimeInterval) throws -> String {
         guard !secret.isEmpty, [6, 8].contains(digits), (1...3600).contains(period),
               time.isFinite, time >= 0, time < Double(UInt64.max) else {
-            throw OTPError.invalid("Некорректные параметры кода или системное время.")
+            throw OTPError.invalid(L10n.text("Некорректные параметры кода или системное время."))
         }
         var counter = UInt64(floor(time / Double(period))).bigEndian
         let message = withUnsafeBytes(of: &counter) { Data($0) }
@@ -16,7 +16,7 @@ public enum OTP {
         case "SHA1": hash = Array(HMAC<Insecure.SHA1>.authenticationCode(for: message, using: key))
         case "SHA256": hash = Array(HMAC<SHA256>.authenticationCode(for: message, using: key))
         case "SHA512": hash = Array(HMAC<SHA512>.authenticationCode(for: message, using: key))
-        default: throw OTPError.invalid("Этот алгоритм не поддерживается. Используйте SHA1, SHA256 или SHA512.")
+        default: throw OTPError.invalid(L10n.text("Этот алгоритм не поддерживается. Используйте SHA1, SHA256 или SHA512."))
         }
         let offset = Int(hash[hash.count - 1] & 0x0f)
         let binary = (UInt32(hash[offset] & 0x7f) << 24)

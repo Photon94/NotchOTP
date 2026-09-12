@@ -20,13 +20,13 @@ struct KeychainVault {
         let status = SecItemCopyMatching(request as CFDictionary, &result)
         if status == errSecItemNotFound { return [] }
         guard status == errSecSuccess else { throw failure(status) }
-        guard let data = result as? Data else { throw OTPError.invalid("Не удалось прочитать хранилище. Данные не изменены.") }
+        guard let data = result as? Data else { throw OTPError.invalid(L10n.text("Не удалось прочитать хранилище. Данные не изменены.")) }
         do {
             let accounts = try JSONDecoder().decode([OTPAccount].self, from: data).map { try $0.validated() }
             guard Set(accounts.map(\.id)).count == accounts.count else { throw OTPError.invalid("Duplicate IDs") }
             return accounts
         } catch {
-            throw OTPError.invalid("Хранилище содержит повреждённые данные. Оно не будет перезаписано.")
+            throw OTPError.invalid(L10n.text("Хранилище содержит повреждённые данные. Оно не будет перезаписано."))
         }
     }
 
@@ -36,7 +36,7 @@ struct KeychainVault {
         if status == errSecItemNotFound {
             var item = query
             item[kSecValueData as String] = data
-            item[kSecAttrLabel as String] = "NotchOTP — аккаунты двухфакторной аутентификации"
+            item[kSecAttrLabel as String] = L10n.text("NotchOTP — аккаунты двухфакторной аутентификации")
             item[kSecAttrAccessible as String] = kSecAttrAccessibleWhenUnlockedThisDeviceOnly
             let added = SecItemAdd(item as CFDictionary, nil)
             guard added == errSecSuccess else { throw failure(added) }
@@ -44,7 +44,7 @@ struct KeychainVault {
     }
 
     private func failure(_ status: OSStatus) -> OTPError {
-        let message = SecCopyErrorMessageString(status, nil) as String? ?? "Ошибка \(status)"
-        return .invalid("Связка ключей недоступна: \(message). Разблокируйте её и попробуйте снова.")
+        let message = SecCopyErrorMessageString(status, nil) as String? ?? L10n.text("Ошибка %d", status)
+        return .invalid(L10n.text("Связка ключей недоступна: %@. Разблокируйте её и попробуйте снова.", message))
     }
 }

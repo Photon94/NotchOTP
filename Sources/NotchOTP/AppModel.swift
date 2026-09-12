@@ -13,6 +13,15 @@ final class AppModel: ObservableObject {
     @Published var error: String?
     @Published var vaultUnavailable = false
     @Published var shortcutLabel = "⌃⌥Space"
+    @Published var language = L10n.language {
+        didSet {
+            L10n.language = language
+            if !demo { UserDefaults.standard.set(language.rawValue, forKey: "appLanguage") }
+            languageChanged?()
+            layoutChanged?()
+        }
+    }
+    var languageChanged: (() -> Void)?
     let demo: Bool
     var layoutChanged: (() -> Void)?
     var hidePanel: (() -> Void)?
@@ -27,9 +36,9 @@ final class AppModel: ObservableObject {
         if demo {
             // Public RFC fixture only. Demo does not access Keychain.
             accounts = [
-                try! OTPAccount(issuer: "GitHub", name: "work · демо", secret: Data("12345678901234567890".utf8)),
-                try! OTPAccount(issuer: "Google", name: "personal · демо", secret: Data("12345678901234567890123456789012".utf8), algorithm: "SHA256"),
-                try! OTPAccount(issuer: "AWS", name: "cloud · демо", secret: Data("12345678901234567890".utf8))
+                try! OTPAccount(issuer: "GitHub", name: "work · demo", secret: Data("12345678901234567890".utf8)),
+                try! OTPAccount(issuer: "Google", name: "personal · demo", secret: Data("12345678901234567890123456789012".utf8), algorithm: "SHA256"),
+                try! OTPAccount(issuer: "AWS", name: "cloud · demo", secret: Data("12345678901234567890".utf8))
             ]
             selectedID = accounts.first?.id
         } else { reload() }
@@ -54,10 +63,10 @@ final class AppModel: ObservableObject {
     }
 
     func add(_ account: OTPAccount) throws {
-        guard !demo else { throw OTPError.invalid("Это деморежим. Перезапустите приложение, чтобы добавить свой аккаунт.") }
-        guard !vaultUnavailable else { throw OTPError.invalid("Сначала откройте доступ к связке ключей.") }
+        guard !demo else { throw OTPError.invalid(L10n.text("Это деморежим. Перезапустите приложение, чтобы добавить свой аккаунт.")) }
+        guard !vaultUnavailable else { throw OTPError.invalid(L10n.text("Сначала откройте доступ к связке ключей.")) }
         guard !accounts.contains(where: { $0.secret == account.secret && $0.issuer == account.issuer && $0.name == account.name }) else {
-            throw OTPError.invalid("Этот аккаунт уже добавлен.")
+            throw OTPError.invalid(L10n.text("Этот аккаунт уже добавлен."))
         }
         let next = accounts + [account]
         try vault.save(next)
@@ -69,11 +78,11 @@ final class AppModel: ObservableObject {
     func delete(_ account: OTPAccount) {
         guard !demo, !vaultUnavailable else { return }
         let alert = NSAlert()
-        alert.messageText = "Удалить \(account.title)?"
-        alert.informativeText = "Ключ исчезнет из NotchOTP. Убедитесь, что у вас есть другой способ входа в этот аккаунт."
+        alert.messageText = L10n.text("Удалить %@?", account.title)
+        alert.informativeText = L10n.text("Ключ исчезнет из NotchOTP. Убедитесь, что у вас есть другой способ входа в этот аккаунт.")
         alert.alertStyle = .warning
-        alert.addButton(withTitle: "Отмена")
-        alert.addButton(withTitle: "Удалить")
+        alert.addButton(withTitle: L10n.text("Отмена"))
+        alert.addButton(withTitle: L10n.text("Удалить"))
         guard alert.runModal() == .alertSecondButtonReturn else { return }
         do {
             let next = accounts.filter { $0.id != account.id }
@@ -115,7 +124,7 @@ final class AppModel: ObservableObject {
             item.setData(Data(), forType: NSPasteboard.PasteboardType("org.nspasteboard.ConcealedType"))
             item.setData(Data(), forType: NSPasteboard.PasteboardType("org.nspasteboard.TransientType"))
             item.setData(Data(), forType: NSPasteboard.PasteboardType("org.nspasteboard.localOnly"))
-            guard pasteboard.writeObjects([item]) else { throw OTPError.invalid("Не удалось скопировать код. Попробуйте ещё раз.") }
+            guard pasteboard.writeObjects([item]) else { throw OTPError.invalid(L10n.text("Не удалось скопировать код. Попробуйте ещё раз.")) }
             clipboardTimer?.invalidate()
             clipboardChange = pasteboard.changeCount
             clipboardTimer = Timer.scheduledTimer(withTimeInterval: min(30, OTP.remaining(period: account.period, time: now.timeIntervalSince1970)), repeats: false) { [weak self] _ in self?.clearClipboardIfOwned() }

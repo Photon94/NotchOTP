@@ -6,6 +6,23 @@ import OTPCore
 @testable import NotchOTP
 
 final class AppTests: XCTestCase {
+    func testDemoLanguageSwitchUpdatesUIWithoutPersistingOrChangingAccounts() {
+        let previous = L10n.language
+        defer { L10n.language = previous }
+        let preference = UserDefaults.standard.string(forKey: "appLanguage")
+        let model = AppModel(demo: true)
+        let original = model.accounts.map { $0.id }
+        var updates = 0
+        model.languageChanged = { updates += 1 }
+        model.language = .english
+        XCTAssertEqual(L10n.text("Добавить"), "Add")
+        model.language = .russian
+        XCTAssertEqual(L10n.text("Добавить"), "Добавить")
+        XCTAssertEqual(updates, 2)
+        XCTAssertEqual(model.accounts.map { $0.id }, original)
+        XCTAssertEqual(UserDefaults.standard.string(forKey: "appLanguage"), preference)
+    }
+
     func testShortcutDoesNotChangeOutsideRecording() throws {
         let button = RecorderButton()
         var changed = false

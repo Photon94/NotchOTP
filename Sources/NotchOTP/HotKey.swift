@@ -1,3 +1,4 @@
+import OTPCore
 import AppKit
 import Carbon
 import SwiftUI
@@ -72,7 +73,7 @@ struct ShortcutRecorder: NSViewRepresentable {
     }
     func updateNSView(_ view: RecorderButton, context: Context) {
         view.savedLabel = label
-        if !view.recording { view.title = label }
+        view.title = view.recording ? L10n.text("Нажмите сочетание…") : label
     }
 }
 
@@ -83,7 +84,7 @@ final class RecorderButton: NSButton {
     override var acceptsFirstResponder: Bool { true }
     @objc func beginRecording() {
         recording = true
-        title = "Нажмите сочетание…"
+        title = L10n.text("Нажмите сочетание…")
         window?.makeFirstResponder(self)
     }
     override func keyDown(with event: NSEvent) {

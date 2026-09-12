@@ -13,19 +13,19 @@ struct ManagementView: View {
         VStack(alignment: .leading, spacing: 20) {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("Ваши коды. Под рукой.").font(.system(size: 25, weight: .semibold))
-                    Text("Вызовите панель, выберите аккаунт и нажмите Enter.")
+                    Text(L10n.text("Ваши коды. Под рукой.")).font(.system(size: 25, weight: .semibold))
+                    Text(L10n.text("Вызовите панель, выберите аккаунт и нажмите Enter."))
                         .font(.system(size: 12)).foregroundStyle(.secondary)
                 }
                 Spacer()
                 Image(systemName: "key.horizontal.fill").font(.system(size: 25)).foregroundStyle(.secondary)
             }
             if model.demo {
-                Label("Деморежим · показаны тестовые аккаунты", systemImage: "info.circle")
+                Label(L10n.text("Деморежим · показаны тестовые аккаунты"), systemImage: "info.circle")
                     .font(.system(size: 12)).foregroundStyle(.orange)
             }
             HStack {
-                Text("Аккаунты").font(.system(size: 13, weight: .semibold))
+                Text(L10n.text("Аккаунты")).font(.system(size: 13, weight: .semibold))
                 Text("\(model.accounts.count)").foregroundStyle(.secondary).font(.system(size: 12))
                 Spacer()
                 Button { importing = true; QRImport.choose { result in
@@ -34,58 +34,71 @@ struct ManagementView: View {
                     case .success(let account): pendingImport = account
                     case .failure(let error): model.error = error.localizedDescription
                     }
-                } } label: { Label(importing ? "Читаем…" : "QR из файла", systemImage: "qrcode") }
+                } } label: { Label(importing ? L10n.text("Читаем…") : L10n.text("QR из файла"), systemImage: "qrcode") }
                     .disabled(importing || model.demo || model.vaultUnavailable)
-                Button { adding = true } label: { Label("Добавить", systemImage: "plus") }
+                Button { adding = true } label: { Label(L10n.text("Добавить"), systemImage: "plus") }
                     .disabled(importing || model.demo || model.vaultUnavailable)
             }
             accountList
             Divider()
             HStack(alignment: .center) {
                 VStack(alignment: .leading, spacing: 5) {
-                    Text("Глобальное сочетание").font(.system(size: 13, weight: .medium))
-                    Text("Нажмите справа, затем введите новое сочетание.")
+                    Text(L10n.text("Глобальное сочетание")).font(.system(size: 13, weight: .medium))
+                    Text(L10n.text("Нажмите справа, затем введите новое сочетание."))
                         .font(.system(size: 11)).foregroundStyle(.secondary)
                 }
                 Spacer()
                 ShortcutRecorder(label: model.shortcutLabel, onRecord: recordShortcut)
                     .frame(width: 170, height: 28)
-                    .help("Используйте Control, Option или Command вместе с клавишей. Escape — отмена.")
+                    .help(L10n.text("Используйте Control, Option или Command вместе с клавишей. Escape — отмена."))
+            }
+            HStack {
+                VStack(alignment: .leading, spacing: 5) {
+                    Text(L10n.text("Язык")).font(.system(size: 13, weight: .medium))
+                    Text(L10n.text("Применяется сразу, без перезапуска."))
+                        .font(.system(size: 11)).foregroundStyle(.secondary)
+                }
+                Spacer()
+                Picker(L10n.text("Язык"), selection: $model.language) {
+                    ForEach(AppLanguage.allCases) { language in
+                        Text(language.title).tag(language)
+                    }
+                }.id(model.language).labelsHidden().frame(width: 170)
             }
             HStack(spacing: 18) {
-                hint("⇥ / ⇧⇥", "Аккаунт")
-                hint("Текст", "Поиск")
-                hint("↵", "Копировать")
-                hint("esc", "Закрыть")
+                hint("⇥ / ⇧⇥", L10n.text("Аккаунт"))
+                hint(L10n.text("Текст"), L10n.text("Поиск"))
+                hint("↵", L10n.text("Копировать"))
+                hint("esc", L10n.text("Закрыть"))
                 Spacer()
-                Button("Показать панель", action: showPanel)
+                Button(L10n.text("Показать панель"), action: showPanel)
             }
             Spacer(minLength: 0)
             HStack(spacing: 7) {
                 Image(systemName: "lock.shield")
-                Text("Ключи хранятся в связке ключей этого Mac. Всё работает локально.")
+                Text(L10n.text("Ключи хранятся в связке ключей этого Mac. Всё работает локально."))
             }.font(.system(size: 11)).foregroundStyle(.secondary)
         }
-        .padding(26).frame(minWidth: 640, idealWidth: 660, minHeight: 540, idealHeight: 560)
+        .padding(26).frame(minWidth: 640, idealWidth: 660, minHeight: 610, idealHeight: 630)
         .sheet(isPresented: $adding) { AddAccountView(model: model) }
         .sheet(item: $pendingImport) { account in
             VStack(alignment: .leading, spacing: 18) {
-                Text("Добавить аккаунт?").font(.title2.weight(.semibold))
+                Text(L10n.text("Добавить аккаунт?")).font(.title2.weight(.semibold))
                 Text(account.title).font(.headline)
                 Text(account.name).foregroundStyle(.secondary)
-                Text("\(account.digits) цифр · \(account.period) сек · \(account.algorithm)").font(.caption).foregroundStyle(.secondary)
+                Text(L10n.text("%d цифр · %d сек · %@", account.digits, account.period, account.algorithm)).font(.caption).foregroundStyle(.secondary)
                 HStack {
-                    Button("Отмена") { pendingImport = nil }.keyboardShortcut(.cancelAction)
+                    Button(L10n.text("Отмена")) { pendingImport = nil }.keyboardShortcut(.cancelAction)
                     Spacer()
-                    Button("Добавить") {
+                    Button(L10n.text("Добавить")) {
                         do { try model.add(account); pendingImport = nil }
                         catch { pendingImport = nil; model.error = error.localizedDescription }
                     }.keyboardShortcut(.defaultAction)
                 }
             }.padding(28).frame(width: 380)
         }
-        .alert("Не удалось выполнить действие", isPresented: Binding(get: { model.error != nil }, set: { if !$0 { model.error = nil } })) {
-            Button("Понятно") { model.error = nil }
+        .alert(L10n.text("Не удалось выполнить действие"), isPresented: Binding(get: { model.error != nil }, set: { if !$0 { model.error = nil } })) {
+            Button(L10n.text("Понятно")) { model.error = nil }
         } message: { Text(model.error ?? "") }
     }
 
@@ -94,14 +107,14 @@ struct ManagementView: View {
             if model.vaultUnavailable {
                 VStack(spacing: 12) {
                     Image(systemName: "lock.fill").font(.title)
-                    Text("Откройте доступ к связке ключей")
-                    Button("Повторить") { model.reload() }
+                    Text(L10n.text("Откройте доступ к связке ключей"))
+                    Button(L10n.text("Повторить")) { model.reload() }
                 }.frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if model.accounts.isEmpty {
                 VStack(spacing: 12) {
                     Image(systemName: "qrcode.viewfinder").font(.system(size: 32, weight: .light)).foregroundStyle(.secondary)
-                    Text("Добавьте первый аккаунт").font(.system(size: 15, weight: .medium))
-                    Text("Выберите QR-код из настроек двухфакторной\nаутентификации или введите секретный ключ.")
+                    Text(L10n.text("Добавьте первый аккаунт")).font(.system(size: 15, weight: .medium))
+                    Text(L10n.text("Выберите QR-код из настроек двухфакторной\nаутентификации или введите секретный ключ."))
                         .font(.system(size: 12)).foregroundStyle(.secondary).multilineTextAlignment(.center)
                 }.frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
@@ -112,14 +125,14 @@ struct ManagementView: View {
                                 Image(systemName: "key.horizontal").font(.system(size: 17)).foregroundStyle(.secondary).frame(width: 25)
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text(account.title).font(.system(size: 13, weight: .medium))
-                                    Text(account.subtitle.isEmpty ? "\(account.digits) цифр · \(account.period) сек" : account.subtitle)
+                                    Text(account.subtitle.isEmpty ? L10n.text("%d цифр · %d сек", account.digits, account.period) : account.subtitle)
                                         .font(.system(size: 11)).foregroundStyle(.secondary)
                                 }
                                 Spacer()
-                                Button("Показать") { model.selectedID = account.id; showPanel() }
+                                Button(L10n.text("Показать")) { model.selectedID = account.id; showPanel() }
                                 Button { model.delete(account) } label: { Image(systemName: "trash") }
                                     .buttonStyle(.borderless).foregroundStyle(.secondary).disabled(model.demo)
-                                    .help("Удалить аккаунт").accessibilityLabel("Удалить \(account.title)")
+                                    .help(L10n.text("Удалить аккаунт")).accessibilityLabel(L10n.text("Удалить %@", account.title))
                             }.padding(.horizontal, 14).padding(.vertical, 12)
                             if account.id != model.accounts.last?.id { Divider().padding(.leading, 51) }
                         }
@@ -154,35 +167,35 @@ struct AddAccountView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
-            Text("Новый аккаунт").font(.system(size: 22, weight: .semibold))
-            Picker("Способ", selection: $mode) {
-                Text("Секретный ключ").tag(0)
-                Text("Ссылка otpauth").tag(1)
+            Text(L10n.text("Новый аккаунт")).font(.system(size: 22, weight: .semibold))
+            Picker(L10n.text("Способ"), selection: $mode) {
+                Text(L10n.text("Секретный ключ")).tag(0)
+                Text(L10n.text("Ссылка otpauth")).tag(1)
             }.pickerStyle(.segmented)
             if mode == 0 {
                 VStack(alignment: .leading, spacing: 12) {
-                    field("Сервис") { TextField("Например, GitHub", text: $issuer) }
-                    field("Аккаунт") { TextField("Например, work или email", text: $name) }
-                    field("Секретный ключ Base32") { SecureField("Ключ из настроек двухфакторной аутентификации", text: $secret) }
-                    DisclosureGroup("Дополнительные параметры") {
+                    field(L10n.text("Сервис")) { TextField(L10n.text("Например, GitHub"), text: $issuer) }
+                    field(L10n.text("Аккаунт")) { TextField(L10n.text("Например, work или email"), text: $name) }
+                    field(L10n.text("Секретный ключ Base32")) { SecureField(L10n.text("Ключ из настроек двухфакторной аутентификации"), text: $secret) }
+                    DisclosureGroup(L10n.text("Дополнительные параметры")) {
                         HStack {
-                            Picker("Алгоритм", selection: $algorithm) {
+                            Picker(L10n.text("Алгоритм"), selection: $algorithm) {
                                 Text("SHA1").tag("SHA1"); Text("SHA256").tag("SHA256"); Text("SHA512").tag("SHA512")
                             }
-                            Picker("Цифры", selection: $digits) { Text("6").tag(6); Text("8").tag(8) }.frame(width: 100)
+                            Picker(L10n.text("Цифры"), selection: $digits) { Text("6").tag(6); Text("8").tag(8) }.frame(width: 100)
                         }.padding(.top, 8)
-                        HStack { Text("Период, секунд"); TextField("30", text: $period).frame(width: 70); Spacer() }.padding(.top, 4)
+                        HStack { Text(L10n.text("Период, секунд")); TextField("30", text: $period).frame(width: 70); Spacer() }.padding(.top, 4)
                     }.font(.system(size: 12))
                 }
             } else {
-                field("Ссылка из настроек сервиса") { SecureField("otpauth://totp/…", text: $uri) }
+                field(L10n.text("Ссылка из настроек сервиса")) { SecureField("otpauth://totp/…", text: $uri) }
             }
             if let error { Text(error).font(.system(size: 12)).foregroundStyle(.red).fixedSize(horizontal: false, vertical: true) }
-            Text("Ключ останется в связке ключей этого Mac.").font(.system(size: 11)).foregroundStyle(.secondary)
+            Text(L10n.text("Ключ останется в связке ключей этого Mac.")).font(.system(size: 11)).foregroundStyle(.secondary)
             HStack {
-                Button("Отмена") { dismiss() }.keyboardShortcut(.cancelAction)
+                Button(L10n.text("Отмена")) { dismiss() }.keyboardShortcut(.cancelAction)
                 Spacer()
-                Button("Добавить") { save() }.keyboardShortcut(.defaultAction)
+                Button(L10n.text("Добавить")) { save() }.keyboardShortcut(.defaultAction)
                     .disabled(mode == 0 ? name.trimmingCharacters(in: .whitespaces).isEmpty || secret.isEmpty : uri.isEmpty)
             }
         }.padding(28).frame(width: 440)
@@ -198,7 +211,7 @@ struct AddAccountView: View {
             let account: OTPAccount
             if mode == 1 { account = try OTPAccount.parse(uri) }
             else {
-                guard let period = Int(period) else { throw OTPError.invalid("Период должен быть целым числом секунд.") }
+                guard let period = Int(period) else { throw OTPError.invalid(L10n.text("Период должен быть целым числом секунд.")) }
                 account = try OTPAccount(issuer: issuer, name: name, secret: Base32.decode(secret), algorithm: algorithm, digits: digits, period: period)
             }
             try model.add(account)

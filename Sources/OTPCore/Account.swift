@@ -10,7 +10,7 @@ public enum OTPError: LocalizedError {
 public enum Base32 {
     public static func decode(_ value: String) throws -> Data {
         let text = value.uppercased().filter { !$0.isWhitespace }
-        let error = OTPError.invalid("Проверьте секретный ключ: нужны буквы A–Z и цифры 2–7 в формате Base32.")
+        let error = OTPError.invalid(L10n.text("Проверьте секретный ключ: нужны буквы A–Z и цифры 2–7 в формате Base32."))
         guard !text.isEmpty, text.count <= 4096 else { throw error }
         let unpadded = text.prefix { $0 != "=" }
         let suffix = text.dropFirst(unpadded.count)
@@ -55,14 +55,14 @@ public struct OTPAccount: Codable, Identifiable, Equatable {
         let issuer = issuer.trimmingCharacters(in: .whitespacesAndNewlines)
         let name = name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !name.isEmpty, name.count <= 200, issuer.count <= 100 else {
-            throw OTPError.invalid("Укажите название аккаунта (до 200 символов) и сервиса (до 100).")
+            throw OTPError.invalid(L10n.text("Укажите название аккаунта (до 200 символов) и сервиса (до 100)."))
         }
-        guard !secret.isEmpty, secret.count <= 2560 else { throw OTPError.invalid("Секретный ключ пустой или слишком длинный.") }
+        guard !secret.isEmpty, secret.count <= 2560 else { throw OTPError.invalid(L10n.text("Секретный ключ пустой или слишком длинный.")) }
         guard ["SHA1", "SHA256", "SHA512"].contains(algorithm.uppercased()) else {
-            throw OTPError.invalid("Поддерживаются только SHA1, SHA256 и SHA512.")
+            throw OTPError.invalid(L10n.text("Поддерживаются только SHA1, SHA256 и SHA512."))
         }
         guard [6, 8].contains(digits), (1...3600).contains(period) else {
-            throw OTPError.invalid("Поддерживаются 6 или 8 цифр и период от 1 до 3600 секунд.")
+            throw OTPError.invalid(L10n.text("Поддерживаются 6 или 8 цифр и период от 1 до 3600 секунд."))
         }
         self.id = id; self.issuer = issuer; self.name = name; self.secret = secret
         self.algorithm = algorithm.uppercased(); self.digits = digits; self.period = period
@@ -80,28 +80,28 @@ public struct OTPAccount: Codable, Identifiable, Equatable {
         guard uri.count < 12000,
               let components = URLComponents(string: uri.trimmingCharacters(in: .whitespacesAndNewlines)),
               components.scheme?.lowercased() == "otpauth" else {
-            throw OTPError.invalid("Нужна ссылка otpauth://totp/… из настройки двухфакторной аутентификации.")
+            throw OTPError.invalid(L10n.text("Нужна ссылка otpauth://totp/… из настройки двухфакторной аутентификации."))
         }
         guard components.host?.lowercased() == "totp" else {
-            throw OTPError.invalid("Этот QR-код не является TOTP. HOTP и пакетный перенос Google пока не поддерживаются.")
+            throw OTPError.invalid(L10n.text("Этот QR-код не является TOTP. HOTP и пакетный перенос Google пока не поддерживаются."))
         }
         var values: [String: String] = [:]
         for item in components.queryItems ?? [] {
             let key = item.name.lowercased()
-            guard values[key] == nil else { throw OTPError.invalid("В ссылке повторяются параметры. Получите новый QR-код у сервиса.") }
+            guard values[key] == nil else { throw OTPError.invalid(L10n.text("В ссылке повторяются параметры. Получите новый QR-код у сервиса.")) }
             values[key] = item.value ?? ""
         }
-        guard let secret = values["secret"] else { throw OTPError.invalid("В QR-коде отсутствует секретный ключ.") }
+        guard let secret = values["secret"] else { throw OTPError.invalid(L10n.text("В QR-коде отсутствует секретный ключ.")) }
         let label = String(components.path.drop(while: { $0 == "/" }))
         let parts = label.split(separator: ":", maxSplits: 1, omittingEmptySubsequences: false)
         let labelIssuer = parts.count == 2 ? String(parts[0]).trimmingCharacters(in: .whitespaces) : ""
         let name = parts.count == 2 ? String(parts[1]) : label
         let issuer = values["issuer"]?.trimmingCharacters(in: .whitespaces) ?? labelIssuer
         if !labelIssuer.isEmpty, !issuer.isEmpty, labelIssuer != issuer {
-            throw OTPError.invalid("Названия сервиса в QR-коде не совпадают. Проверьте источник.")
+            throw OTPError.invalid(L10n.text("Названия сервиса в QR-коде не совпадают. Проверьте источник."))
         }
         guard let digits = Int(values["digits"] ?? "6"), let period = Int(values["period"] ?? "30") else {
-            throw OTPError.invalid("Некорректное число цифр или период в QR-коде.")
+            throw OTPError.invalid(L10n.text("Некорректное число цифр или период в QR-коде."))
         }
         return try OTPAccount(issuer: issuer, name: name, secret: Base32.decode(secret),
                               algorithm: values["algorithm"] ?? "SHA1", digits: digits, period: period)

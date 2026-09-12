@@ -19,7 +19,7 @@ struct CountdownRing: View {
         }
         .frame(width: size, height: size)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Осталось \(Int(ceil(remaining))) секунд")
+        .accessibilityLabel(L10n.text("Осталось %d секунд", Int(ceil(remaining))))
     }
 }
 
@@ -56,9 +56,9 @@ struct PanelView: View {
                 Color.clear.frame(height: neckHeight)
                 Group {
                 if model.vaultUnavailable {
-                    emptyState("Связка ключей закрыта", detail: "Открыть настройки", symbol: "lock.fill")
+                    emptyState(L10n.text("Связка ключей закрыта"), detail: L10n.text("Открыть настройки"), symbol: "lock.fill")
                 } else if model.accounts.isEmpty {
-                    emptyState("Добавьте первый аккаунт", detail: "Настроить NotchOTP", symbol: "plus.circle")
+                    emptyState(L10n.text("Добавьте первый аккаунт"), detail: L10n.text("Настроить NotchOTP"), symbol: "plus.circle")
                 } else if model.searching {
                     searchContent(date: context.date)
                 } else if let account = model.selected {
@@ -83,7 +83,7 @@ struct PanelView: View {
             HStack(spacing: 7) {
                 Image(systemName: model.copied ? "checkmark.circle.fill" : "key.horizontal.fill")
                     .font(.system(size: 12)).foregroundStyle(model.copied ? Color.mint : .white)
-                Text(model.copied ? "Скопировано" : account.title)
+                Text(model.copied ? L10n.text("Скопировано") : account.title)
                     .font(.system(size: 12, weight: .medium)).lineLimit(1)
                 if !model.copied && !account.subtitle.isEmpty {
                     Text("· " + account.subtitle).font(.system(size: 11)).foregroundStyle(Color.white.opacity(0.65)).lineLimit(1)
@@ -103,7 +103,7 @@ struct PanelView: View {
         .frame(height: 86)
         .contentShape(Rectangle())
         .onTapGesture { model.copySelected() }
-        .help("Enter — скопировать · Tab — следующий · Начните печатать для поиска")
+        .help(L10n.text("Enter — скопировать · Tab — следующий · Начните печатать для поиска"))
         .accessibilityElement(children: .contain)
     }
 
@@ -124,7 +124,7 @@ struct PanelView: View {
         VStack(spacing: 8) {
             HStack(spacing: 8) {
                 Image(systemName: "magnifyingglass").foregroundStyle(.gray)
-                Text(model.query.isEmpty ? "Найти аккаунт…" : model.query)
+                Text(model.query.isEmpty ? L10n.text("Найти аккаунт…") : model.query)
                     .foregroundStyle(model.query.isEmpty ? Color.gray : .white)
                     .lineLimit(1)
                 Spacer(minLength: 0)
@@ -132,7 +132,7 @@ struct PanelView: View {
             }.font(.system(size: 13)).padding(.horizontal, 10).frame(height: 32)
                 .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
             if model.filtered.isEmpty {
-                Text("Ничего не найдено").font(.system(size: 12)).foregroundStyle(.gray)
+                Text(L10n.text("Ничего не найдено")).font(.system(size: 12)).foregroundStyle(.gray)
                     .frame(maxWidth: .infinity).frame(height: 50)
             } else {
                 ScrollViewReader { proxy in
@@ -166,9 +166,9 @@ struct PanelView: View {
                 }.frame(height: CGFloat(min(5, model.filtered.count)) * 65 - 3)
             }
             HStack {
-                Text("↑↓ Выбрать")
+                Text(L10n.text("↑↓ Выбрать"))
                 Spacer()
-                Text(model.copied ? "Скопировано" : "↵ Копировать")
+                Text(model.copied ? L10n.text("Скопировано") : L10n.text("↵ Копировать"))
             }.font(.system(size: 10)).foregroundStyle(.gray).padding(.horizontal, 3)
         }.padding(12)
     }

@@ -12,7 +12,7 @@
 
 A small, native TOTP authenticator for macOS. Press **Control + Option + Space** and a black panel flows down from your MacBook's notch, showing the current code and a circular countdown.
 
-The panel matches the physical notch width. Type to search, use Tab to switch accounts, and press Enter to copy. No browser, cloud service, or external packages are involved. The current app interface is in Russian.
+The panel matches the physical notch width. Type to search, use Tab to switch accounts, and press Enter to copy. No browser, cloud service, or external packages are involved. The interface supports English and Russian, follows your macOS language by default, and can be changed instantly in settings.
 
 ## Preview
 
@@ -32,7 +32,7 @@ Animated preview rendered from the app’s SwiftUI views using public demo accou
 
 ## Get started
 
-[**Download NotchOTP 0.2.1 for Apple Silicon**](https://github.com/Photon94/NotchOTP/releases/tag/v0.2.1)
+[**Download NotchOTP 0.3.0 for Apple Silicon**](https://github.com/Photon94/NotchOTP/releases/tag/v0.3.0)
 
 Download the DMG from the release, open it, and drag **NotchOTP.app** onto **Applications**. A ZIP is also available. Both are signed with a Developer ID Application certificate and notarized by Apple, with the ticket stapled, so Gatekeeper accepts them offline. macOS still shows its usual confirmation for an app downloaded from the internet.
 
@@ -55,14 +55,16 @@ open dist/NotchOTP.app
 
 The script creates `dist/NotchOTP.app` and `dist/NotchOTP.zip`. To also create an installer disk image, run `./scripts/create-dmg.sh dist/NotchOTP.app dist/NotchOTP.dmg`. Move the app to **Applications** for regular use. Builds from successful workflow runs are also available under [Actions](https://github.com/Photon94/NotchOTP/actions/workflows/ci.yml).
 
-1. Open **NotchOTP** and choose **Добавить** (Add).
-2. Enter the service, account name, and Base32 secret from the service's two-factor setup page. Alternatively, choose **QR из файла** to import an image containing one QR code.
+1. Open **NotchOTP** and choose **Add**.
+2. Enter the service, account name, and Base32 secret from the service's two-factor setup page. Alternatively, choose **QR from file** to import an image containing one QR code.
 3. Press **Control + Option + Space** to open the panel.
 4. Press **Enter** to copy the code and return to your previous app.
 
 A setup secret is different from a six-digit login code. Keep your existing authenticator or recovery method until you have verified the new codes.
 
 > Release downloads are Developer ID signed and notarized. A local `./scripts/build.sh` build stays ad-hoc signed and targets the architecture of the Mac running it; see [docs/SIGNING.md](docs/SIGNING.md) for the distribution build. The initial version was tested on Apple Silicon with macOS 26.5.
+
+To choose a language, open **Accounts and Settings… → Language**. Choose **Use macOS language**, **English**, or **Русский**. Account names and secrets are never translated.
 
 ## Keyboard controls
 
@@ -74,13 +76,13 @@ A setup secret is different from a six-digit login code. Keep your existing auth
 | Select search result | Up / Down |
 | Copy and close | Enter or Command + C |
 | Dismiss | Escape |
-| Account management | Menu bar key icon → Аккаунты и настройки… |
+| Account management | Menu bar key icon → Accounts and Settings… |
 
 Clicking the code also copies it. To change the global shortcut, click its button in settings and press a combination containing Control, Option, or Command. Escape cancels recording.
 
 ## Privacy and security
 
-- Secrets and account metadata are stored in **macOS Keychain**. Only the shortcut is stored in preferences.
+- Secrets and account metadata are stored in **macOS Keychain**. Only the shortcut and language choice are stored in preferences.
 - The app does not make network requests or include analytics. QR import reads a file you select; camera and screen recording permissions are not needed.
 - Clipboard content is marked concealed, transient, and local-only. It is cleared when the code expires, within 30 seconds, only if nothing else has replaced it. Third-party clipboard managers may ignore these markers.
 - On sleep or session lock, the panel hides immediately. Secrets are held in process memory while the app runs; the app does not require biometric approval for each code.
