@@ -6,13 +6,13 @@
 <key>CFBundleName</key><string>NotchOTP</string>
 <key>CFBundleDisplayName</key><string>NotchOTP</string>
 <key>CFBundlePackageType</key><string>APPL</string>
-<key>CFBundleShortVersionString</key><string>0.3.0</string>
-<key>CFBundleVersion</key><string>4</string>
+<key>CFBundleShortVersionString</key><string>0.3.1</string>
+<key>CFBundleVersion</key><string>5</string>
 <key>CFBundleIconFile</key><string>AppIcon</string>
 <key>LSMinimumSystemVersion</key><string>13.0</string>
 <key>LSUIElement</key><true/>
 <key>NSHighResolutionCapable</key><true/>
 <key>NSPrincipalClass</key><string>NSApplication</string>
 <key>CFBundleDevelopmentRegion</key><string>en</string>
-<key>CFBundleLocalizations</key><array><string>en</string><string>ru</string></array>
+<key>CFBundleLocalizations</key><array><string>en</string><string>ru</string><string>zh-Hans</string><string>de</string><string>fr</string><string>hi</string></array>
 </dict></plist>

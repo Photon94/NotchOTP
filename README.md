@@ -12,7 +12,7 @@
 
 A small, native TOTP authenticator for macOS. Press **Control + Option + Space** and a black panel flows down from your MacBook's notch, showing the current code and a circular countdown.
 
-The panel matches the physical notch width. Type to search, use Tab to switch accounts, and press Enter to copy. No browser, cloud service, or external packages are involved. The interface supports English and Russian, follows your macOS language by default, and can be changed instantly in settings.
+The panel matches the physical notch width. Type to search, use Tab to switch accounts, and press Enter to copy. No browser, cloud service, or external packages are involved. The interface supports English, Russian, Simplified Chinese, German, French, and Hindi, follows your macOS language by default, and can be changed instantly in settings.
 
 ## Preview
 
@@ -32,7 +32,7 @@ Animated preview rendered from the app’s SwiftUI views using public demo accou
 
 ## Get started
 
-[**Download NotchOTP 0.3.0 for Apple Silicon**](https://github.com/Photon94/NotchOTP/releases/tag/v0.3.0)
+[**Download NotchOTP 0.3.1 for Apple Silicon**](https://github.com/Photon94/NotchOTP/releases/tag/v0.3.1)
 
 Download the DMG from the release, open it, and drag **NotchOTP.app** onto **Applications**. A ZIP is also available. Both are signed with a Developer ID Application certificate and notarized by Apple, with the ticket stapled, so Gatekeeper accepts them offline. macOS still shows its usual confirmation for an app downloaded from the internet.
 
@@ -64,7 +64,7 @@ A setup secret is different from a six-digit login code. Keep your existing auth
 
 > Release downloads are Developer ID signed and notarized. A local `./scripts/build.sh` build stays ad-hoc signed and targets the architecture of the Mac running it; see [docs/SIGNING.md](docs/SIGNING.md) for the distribution build. The initial version was tested on Apple Silicon with macOS 26.5.
 
-To choose a language, open **Accounts and Settings… → Language**. Choose **Use macOS language**, **English**, or **Русский**. Account names and secrets are never translated.
+To choose a language, open **Accounts and Settings… → Language**. Choose **Use macOS language** or select **English**, **Русский**, **简体中文**, **Deutsch**, **Français**, or **हिन्दी**. Account names and secrets are never translated.
 
 ## Keyboard controls
 

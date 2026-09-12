@@ -1,13 +1,17 @@
 import Foundation
 
 public enum AppLanguage: String, CaseIterable, Identifiable {
-    case system, russian = "ru", english = "en"
+    case system, russian = "ru", english = "en", chinese = "zh-Hans", german = "de", french = "fr", hindi = "hi"
     public var id: String { rawValue }
     public var title: String {
         switch self {
         case .system: return L10n.text("Как в macOS")
         case .russian: return "Русский"
         case .english: return "English"
+        case .chinese: return "简体中文"
+        case .german: return "Deutsch"
+        case .french: return "Français"
+        case .hindi: return "हिन्दी"
         }
     }
     public func resolved(preferredLanguages: [String] = Locale.preferredLanguages) -> AppLanguage {
@@ -16,6 +20,16 @@ public enum AppLanguage: String, CaseIterable, Identifiable {
             let code = identifier.lowercased().split(whereSeparator: { $0 == "-" || $0 == "_" }).first
             if code == "ru" { return .russian }
             if code == "en" { return .english }
+            if code == "zh" {
+                let parts = identifier.lowercased().split(whereSeparator: { $0 == "-" || $0 == "_" })
+                // Do not replace a Traditional Chinese preference with Simplified.
+                let traditional = parts.contains("hant") ||
+                    (!parts.contains("hans") && parts.contains(where: { ["tw", "hk", "mo"].contains(String($0)) }))
+                if !traditional { return .chinese }
+            }
+            if code == "de" { return .german }
+            if code == "fr" { return .french }
+            if code == "hi" { return .hindi }
         }
         return .english
     }
@@ -32,9 +46,20 @@ public enum L10n {
     }
     public static func text(_ key: String, _ arguments: CVarArg...) -> String {
         let resolved = language.resolved()
-        let format = resolved == .russian ? key : (english[key] ?? key)
+        let format = resolved == .russian ? key : (catalog(for: resolved)[key] ?? english[key] ?? key)
         guard !arguments.isEmpty else { return format }
         return String(format: format, locale: Locale(identifier: resolved.rawValue), arguments: arguments)
+    }
+
+    static func catalog(for language: AppLanguage) -> [String: String] {
+        switch language {
+        case .chinese: return chinese
+        case .german: return german
+        case .french: return french
+        case .hindi: return hindi
+        case .english, .system: return english
+        case .russian: return [:] // Russian source keys are the original catalog.
+        }
     }
 
     static let english: [String: String] = [
